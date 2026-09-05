@@ -1,1387 +1,752 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FlixPass — Official Netflix Premium 4K Subscriptions</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Google Fonts: Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              red: '#E50914',
-              redHover: '#b80710',
-              dark: '#0b0b0f',
-              card: '#121218',
-              cardBorder: 'rgba(255, 255, 255, 0.08)',
-              accent: '#ff2a36',
-            }
-          },
-          animation: {
-            'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'float': 'float 4s ease-in-out infinite',
-          },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-8px)' },
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    body {
-      background-color: #08080c;
-      color: #e2e8f0;
-      font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
-    }
-    .glass-nav {
-      background: rgba(11, 11, 15, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .glass-card {
-      background: rgba(18, 18, 24, 0.7);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-    }
-    .glass-card:hover {
-      border-color: rgba(229, 9, 20, 0.35);
-      box-shadow: 0 12px 32px -8px rgba(229, 9, 20, 0.18);
-    }
-    .gradient-glow {
-      background: radial-gradient(circle at 50% -20%, rgba(229, 9, 20, 0.25), transparent 70%);
-    }
-    .badge-glow {
-      box-shadow: 0 0 15px rgba(229, 9, 20, 0.35);
-    }
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #08080c;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #23232d;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #E50914;
-    }
-  </style>
-</head>
-<body class="selection:bg-red-600 selection:text-white">
-
-  <!-- Top Announcement Bar -->
-  <aside aria-label="Announcement" class="bg-gradient-to-r from-red-950 via-red-900 to-black text-xs text-red-200 py-2 px-4 border-b border-red-500/20 relative z-50">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-2 overflow-hidden whitespace-nowrap">
-        <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-red-600/30 text-red-300 font-semibold border border-red-500/30 text-[10px] uppercase tracking-wider">Flash Deal</span>
-        <p class="truncate text-gray-200">
-          ⚡ <strong>Instant Delivery Enabled:</strong> Official 4K Ultra HD Netflix profiles with zero household lockouts!
-        </p>
-      </div>
-      <div class="hidden sm:flex items-center gap-4 text-[11px] text-gray-300 shrink-0">
-        <span class="flex items-center gap-1"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> Full Warranty</span>
-        <span class="text-white/20">•</span>
-        <a href="#track" onclick="openTrackModal()" class="hover:text-white underline decoration-red-500 underline-offset-4 flex items-center gap-1 cursor-pointer">
-          <i data-lucide="search" class="w-3 h-3 text-red-400"></i> Track Order
-        </a>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Main Navigation Bar -->
-  <nav class="sticky top-0 z-40 glass-nav transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <!-- Brand Logo -->
-        <a href="#" class="flex items-center gap-2.5 group">
-          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center font-black text-white text-xl tracking-wider shadow-lg shadow-red-600/30 group-hover:scale-105 transition-transform">
-            N
-          </div>
-          <div class="flex flex-col">
-            <div class="flex items-center gap-1.5">
-              <span class="font-extrabold text-lg text-white tracking-tight">FLIX<span class="text-brand-red">PASS</span></span>
-              <span class="px-1.5 py-0.5 text-[9px] font-bold bg-white/10 text-red-400 rounded-full border border-red-500/20 uppercase tracking-wide">PRO</span>
-            </div>
-            <span class="text-[9px] text-gray-400 tracking-wider">PREMIUM STREAMING HUB</span>
-          </div>
-        </a>
-
-        <!-- Desktop Menu Links -->
-        <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
-          <a href="#plans" class="hover:text-white transition-colors">Subscription Plans</a>
-          <a href="#features" class="hover:text-white transition-colors">Ultra HD Features</a>
-          <a href="#how-it-works" class="hover:text-white transition-colors">How It Works</a>
-          <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
-        </div>
-
-        <!-- Currency Switcher & CTA Buttons -->
-        <div class="flex items-center gap-3">
-          <!-- Currency Toggle -->
-          <div class="relative bg-white/5 border border-white/10 rounded-lg p-0.5 flex items-center text-xs">
-            <button onclick="setCurrency('NPR')" id="curr-npr" class="curr-btn px-2.5 py-1 rounded font-semibold transition-all bg-brand-red text-white shadow-sm">NPR</button>
-            <button onclick="setCurrency('USD')" id="curr-usd" class="curr-btn px-2.5 py-1 rounded font-medium text-gray-400 hover:text-white transition-all">USD</button>
-            <button onclick="setCurrency('INR')" id="curr-inr" class="curr-btn px-2.5 py-1 rounded font-medium text-gray-400 hover:text-white transition-all">INR</button>
-          </div>
-
-          <!-- Order Lookup Button -->
-          <button onclick="openTrackModal()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-colors">
-            <i data-lucide="key-round" class="w-3.5 h-3.5 text-red-400"></i>
-            <span>My Key</span>
-          </button>
-
-          <!-- Primary CTA Button -->
-          <a href="#plans" class="inline-flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-brand-red hover:bg-brand-redHover rounded-lg transition-all shadow-lg shadow-red-600/25 hover:shadow-red-600/40 transform hover:-translate-y-0.5">
-            <i data-lucide="sparkles" class="w-4 h-4"></i>
-            <span>Get Netflix</span>
-          </a>
-
-          <!-- Mobile Hamburger -->
-          <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-400 hover:text-white">
-            <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
-          </button>
-        </div>
-      </div>
+    <!-- Desktop Menu Links -->
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-gray-300">
+      <a href="#plans" class="hover:text-white transition-colors">Compare Both Plans</a>
+      <a href="#features" class="hover:text-white transition-colors">Ultra HD Features</a>
+      <a href="#how-it-works" class="hover:text-white transition-colors">How It Works</a>
+      <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
     </div>
 
-    <!-- Mobile Nav Drawer -->
-    <div id="mobile-menu" class="hidden md:hidden border-t border-white/10 bg-[#0c0c12] px-4 pt-3 pb-5 space-y-3 text-sm">
-      <a href="#plans" onclick="toggleMobileMenu()" class="block py-2 text-gray-300 hover:text-white font-medium">Subscription Plans</a>
-      <a href="#features" onclick="toggleMobileMenu()" class="block py-2 text-gray-300 hover:text-white font-medium">Ultra HD Features</a>
-      <a href="#how-it-works" onclick="toggleMobileMenu()" class="block py-2 text-gray-300 hover:text-white font-medium">How It Works</a>
-      <a href="#faq" onclick="toggleMobileMenu()" class="block py-2 text-gray-300 hover:text-white font-medium">FAQ</a>
-      <button onclick="toggleMobileMenu(); openTrackModal()" class="w-full text-left py-2 text-red-400 font-medium flex items-center gap-2">
-        <i data-lucide="key-round" class="w-4 h-4"></i> Track My Activation
+    <!-- Currency Switcher & CTA Buttons -->
+    <div class="flex items-center gap-3">
+      <!-- Currency Toggle -->
+      <div class="relative bg-white/5 border border-white/10 rounded-lg p-0.5 flex items-center text-xs">
+        <button onclick="setCurrency('NPR')" id="curr-npr" class="curr-btn px-2.5 py-1 rounded font-semibold transition-all bg-brand-red text-white shadow-sm">NPR</button>
+        <button onclick="setCurrency('USD')" id="curr-usd" class="curr-btn px-2.5 py-1 rounded font-medium text-gray-400 hover:text-white transition-all">USD</button>
+        <button onclick="setCurrency('INR')" id="curr-inr" class="curr-btn px-2.5 py-1 rounded font-medium text-gray-400 hover:text-white transition-all">INR</button>
+      </div>
+
+      <!-- Order Lookup Button -->
+      <button onclick="openTrackModal()" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-colors">
+        <i data-lucide="key-round" class="w-3.5 h-3.5 text-red-400"></i>
+        <span>My Key</span>
+      </button>
+
+      <!-- Primary CTA Button -->
+      <a href="#plans" class="inline-flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-brand-red hover:bg-brand-redHover rounded-lg transition-all shadow-lg shadow-red-600/25 hover:shadow-red-600/40 transform hover:-translate-y-0.5">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span>Get Started</span>
+      </a>
+
+      <!-- Mobile Hamburger -->
+      <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-400 hover:text-white">
+        <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
       </button>
     </div>
-  </nav>
+  </div>
+</div>
 
-  <!-- Hero Section -->
-  <header class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden gradient-glow">
-    <div class="absolute inset-0 bg-[radial-gradient(#222_1px,transparent_1px)] [background-size:24px_24px] opacity-25 pointer-events-none"></div>
+<!-- Mobile Nav Drawer -->
+<div id="mobile-menu" class="hidden md:hidden border-t border-white/10 bg-[#0c0c12] px-4 pt-3 pb-5 space-y-3 text-sm">
+  <a href="#plans" onclick="toggleMobileMenu()" class="block py-2 text-gray-300 hover:text-white font-medium">Compare Both Plans</a>
+  <a href="#features" onclick="toggleMobileMenu()" class="block py-2 text-gray-300 hover:text-white font-medium">Ultra HD Features</a>
+  <a href="#how-it-works" onclick="toggleMobileMenu()" class="block py-2 text-gray-300 hover:text-white font-medium">How It Works</a>
+  <a href="#faq" onclick="toggleMobileMenu()" class="block py-2 text-gray-300 hover:text-white font-medium">FAQ</a>
+  <button onclick="toggleMobileMenu(); openTrackModal()" class="w-full text-left py-2 text-red-400 font-medium flex items-center gap-2">
+    <i data-lucide="key-round" class="w-4 h-4"></i> Track My Activation
+  </button>
+</div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-      
-      <!-- Trust Pill Badge -->
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/60 border border-red-500/30 text-xs font-semibold text-red-300 mb-6 badge-glow animate-pulse-subtle">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        <span class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i> Auto Delivery Active • Instant 4K Access</span>
-      </div>
 
-      <!-- Hero Heading -->
-      <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight max-w-4xl mx-auto leading-[1.15]">
-        Stream Netflix Premium <span class="bg-gradient-to-r from-red-500 via-rose-500 to-red-600 bg-clip-text text-transparent">Ultra HD 4K</span> At 70% Less.
-      </h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+  
+  <!-- Trust Pill Badge -->
+  <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-950/60 border border-red-500/30 text-xs font-semibold text-red-300 mb-6 badge-glow animate-pulse-subtle">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+    <span class="flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i> Direct Payment Activation • Zero Household Lockouts</span>
+  </div>
 
-      <!-- Hero Subtitle -->
-      <p class="mt-5 text-sm sm:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
-        Get an official Netflix Premium account or dedicated PIN-protected profile. Enjoy seamless 4K HDR streaming with <span class="text-white font-medium">zero household lockouts</span> and instant activation.
-      </p>
+  <!-- Hero Heading -->
+  <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight max-w-4xl mx-auto leading-[1.15]">
+    Stream Netflix Premium <span class="bg-gradient-to-r from-red-500 via-rose-500 to-red-600 bg-clip-text text-transparent">Ultra HD 4K</span> Your Way.
+  </h1>
 
-      <!-- Action Buttons -->
-      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="#plans" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-bold text-base shadow-xl shadow-red-600/30 hover:shadow-red-600/50 transition-all flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
-          <i data-lucide="play" class="w-5 h-5 fill-white"></i>
-          <span>Choose Your Plan</span>
-        </a>
-        <a href="#how-it-works" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 font-semibold text-base transition-all flex items-center justify-center gap-2">
-          <i data-lucide="help-circle" class="w-5 h-5 text-red-400"></i>
-          <span>How It Works</span>
-        </a>
-      </div>
+  <!-- Hero Subtitle -->
+  <p class="mt-5 text-sm sm:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+    Choose between a budget-friendly <strong>Private Shared Profile</strong> or get a <strong>VIP Upgrade directly on your own personal email</strong> with payment handled by us.
+  </p>
 
-      <!-- Trust Metrics Bar -->
-      <div class="mt-14 pt-8 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-        <div class="p-3 text-center">
-          <div class="text-2xl sm:text-3xl font-extrabold text-white">45s</div>
-          <div class="text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
-            <i data-lucide="zap" class="w-3.5 h-3.5 text-yellow-400"></i> Instant Response
-          </div>
-        </div>
-        <div class="p-3 text-center">
-          <div class="text-2xl sm:text-3xl font-extrabold text-white">4K UHD</div>
-          <div class="text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
-            <i data-lucide="tv" class="w-3.5 h-3.5 text-red-400"></i> Dolby Vision & Audio
-          </div>
-        </div>
-        <div class="p-3 text-center">
-          <div class="text-2xl sm:text-3xl font-extrabold text-white">100%</div>
-          <div class="text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
-            <i data-lucide="shield" class="w-3.5 h-3.5 text-emerald-400"></i> Full Period Warranty
-          </div>
-        </div>
-        <div class="p-3 text-center">
-          <div class="text-2xl sm:text-3xl font-extrabold text-white">4.9/5</div>
-          <div class="text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
-            <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i> 14,000+ Streamers
-          </div>
-        </div>
+  <!-- Action Buttons -->
+  <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+    <a href="#plans" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-bold text-base shadow-xl shadow-red-600/30 hover:shadow-red-600/50 transition-all flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
+      <i data-lucide="play" class="w-5 h-5 fill-white"></i>
+      <span>Choose Your Plan</span>
+    </a>
+    <a href="#how-it-works" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 font-semibold text-base transition-all flex items-center justify-center gap-2">
+      <i data-lucide="help-circle" class="w-5 h-5 text-red-400"></i>
+      <span>How It Works</span>
+    </a>
+  </div>
+
+  <!-- Trust Metrics Bar -->
+  <div class="mt-14 pt-8 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+    <div class="p-3 text-center">
+      <div class="text-2xl sm:text-3xl font-extrabold text-white">4K UHD</div>
+      <div class="text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
+        <i data-lucide="tv" class="w-3.5 h-3.5 text-red-400"></i> Dolby Vision & Audio
       </div>
     </div>
-  </header>
+    <div class="p-3 text-center">
+      <div class="text-2xl sm:text-3xl font-extrabold text-white">Own Email</div>
+      <div class="text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
+        <i data-lucide="mail-check" class="w-3.5 h-3.5 text-emerald-400"></i> VIP Upgrade Available
+      </div>
+    </div>
+    <div class="p-3 text-center">
+      <div class="text-2xl sm:text-3xl font-extrabold text-white">100%</div>
+      <div class="text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
+        <i data-lucide="shield" class="w-3.5 h-3.5 text-emerald-400"></i> Full Period Warranty
+      </div>
+    </div>
+    <div class="p-3 text-center">
+      <div class="text-2xl sm:text-3xl font-extrabold text-white">4.9 / 5</div>
+      <div class="text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
+        <i data-lucide="star" class="w-3.5 h-3.5 text-amber-400 fill-amber-400"></i> Trusted by 1,400+
+      </div>
+    </div>
+  </div>
+</div>
 
-  <!-- Pricing Plans Section -->
-  <section id="plans" class="py-16 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <!-- Section Header -->
-      <div class="text-center max-w-3xl mx-auto mb-12">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-red bg-red-950/60 px-3 py-1 rounded-full border border-red-500/30">
-          Transparent Pricing
-        </span>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Select Your Netflix Plan</h2>
-        <p class="text-gray-400 text-sm sm:text-base mt-2">
-          Pay via eSewa, Khalti, or Bank QR. Verified activation with login credentials sent right away.
+
+  <!-- Section Header -->
+  <div class="text-center max-w-2xl mx-auto mb-12">
+    <span class="text-xs font-bold uppercase tracking-widest text-brand-red bg-red-950/60 px-3 py-1 rounded-full border border-red-500/30">
+      Transparent Options
+    </span>
+    <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Select How You Want to Stream</h2>
+    <p class="text-gray-400 text-sm sm:text-base mt-2">
+      Solo viewer or family? Pick your preferred model. Pay easily in NPR via eSewa, Khalti, or Nabil Fonepay.
+    </p>
+
+    <!-- Duration Switcher Tabs -->
+    <div class="mt-6 inline-flex p-1 bg-white/5 border border-white/10 rounded-xl">
+      <button onclick="setDuration('1m')" id="dur-1m" class="dur-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-gray-400 hover:text-white">
+        1 Month
+      </button>
+      <button onclick="setDuration('3m')" id="dur-3m" class="dur-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all bg-brand-red text-white shadow-md">
+        3 Months <span class="text-[10px] ml-1 bg-black/40 px-1.5 py-0.5 rounded text-red-200">Save 15%</span>
+      </button>
+      <button onclick="setDuration('6m')" id="dur-6m" class="dur-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-gray-400 hover:text-white">
+        6 Months <span class="text-[10px] ml-1 bg-black/40 px-1.5 py-0.5 rounded text-red-200">Save 25%</span>
+      </button>
+      <button onclick="setDuration('12m')" id="dur-12m" class="dur-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-gray-400 hover:text-white">
+        12 Months <span class="text-[10px] ml-1 bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded">Best Value</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 2-CARD GRID -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch max-w-5xl mx-auto">
+    
+    <!-- OPTION 1: Shared 4K Profile (Economical / Instant) -->
+    <div class="glass-card rounded-2xl p-7 sm:p-8 flex flex-col justify-between relative transition-all duration-300 border border-white/10 hover:border-white/20">
+      <div>
+        <!-- Top Badges -->
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold px-3 py-1 rounded-md bg-white/10 text-gray-300">Option 1: Solo Streamer</span>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+            <i data-lucide="zap" class="w-3 h-3 text-emerald-400"></i> Instant Delivery
+          </span>
+        </div>
+
+        <h3 class="text-2xl font-bold text-white mt-4 flex items-center gap-2">
+          Shared 4K Profile
+        </h3>
+        <p class="text-xs text-gray-400 mt-1 leading-relaxed">
+          We provide an active Netflix login with your own private 4-digit PIN lock. Ideal for individuals on phones, laptops, or TVs.
         </p>
 
-        <!-- Duration Switcher Tabs -->
-        <div class="mt-6 inline-flex p-1 bg-white/5 border border-white/10 rounded-xl">
-          <button onclick="setDuration('1m')" id="dur-1m" class="dur-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-gray-400 hover:text-white">
-            1 Month
-          </button>
-          <button onclick="setDuration('3m')" id="dur-3m" class="dur-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all bg-brand-red text-white shadow-md">
-            3 Months <span class="text-[10px] ml-1 bg-black/40 px-1.5 py-0.5 rounded text-red-200">Save 15%</span>
-          </button>
-          <button onclick="setDuration('6m')" id="dur-6m" class="dur-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-gray-400 hover:text-white">
-            6 Months <span class="text-[10px] ml-1 bg-black/40 px-1.5 py-0.5 rounded text-red-200">Save 25%</span>
-          </button>
-          <button onclick="setDuration('12m')" id="dur-12m" class="dur-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all text-gray-400 hover:text-white">
-            12 Months <span class="text-[10px] ml-1 bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded">Best Deal</span>
-          </button>
+        <div class="mt-6 flex items-baseline gap-2">
+          <span class="text-4xl font-black text-white" id="price-plan-1">NPR 799</span>
+          <span class="text-xs text-gray-500 line-through" id="original-plan-1">NPR 1,200</span>
+          <span class="text-xs text-gray-400" id="duration-label-1">/ 3 Months</span>
         </div>
+
+        <!-- Perks List -->
+        <ul class="mt-6 space-y-3.5 text-xs text-gray-300">
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span><strong>Private 4-Digit PIN Lock</strong> on your profile</span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span><strong>Ultra HD 4K + HDR10 + Dolby Vision</strong> quality</span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span>Works on <strong>Smart TV, FireStick, Phone, Tablet, PC</strong></span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span><strong>Household Bypass:</strong> No travel lockout errors</span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span>Offline video downloads enabled</span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span><strong>Full Period Replacement Warranty</strong> on WhatsApp</span>
+          </li>
+        </ul>
       </div>
 
-      <!-- Pricing Cards Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-        
-        <!-- PLAN 1: Economy Screen -->
-        <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between relative transition-all duration-300">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-white/10 text-gray-300">Shared Profile</span>
-              <span class="text-xs font-medium text-emerald-400 flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> In Stock
-              </span>
-            </div>
-            <h3 class="text-xl font-bold text-white mt-4">Economy Screen</h3>
-            <p class="text-xs text-gray-400 mt-1">Best for solo casual viewers streaming on phone or laptop.</p>
-
-            <div class="mt-6 flex items-baseline gap-2">
-              <span class="text-3xl sm:text-4xl font-black text-white" id="price-plan-1">NPR 350</span>
-              <span class="text-xs text-gray-500 line-through" id="original-plan-1">NPR 600</span>
-              <span class="text-xs text-gray-400" id="duration-label-1">/ 3 Months</span>
-            </div>
-
-            <!-- Perks List -->
-            <ul class="mt-6 space-y-3 text-xs text-gray-300">
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>1 Device Streaming at a time</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>Full HD (1080p) Streaming</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>Phone, Tablet & PC compatible</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>Standard Replacement Warranty</span>
-              </li>
-              <li class="flex items-center gap-2.5 text-gray-500">
-                <i data-lucide="x" class="w-4 h-4 text-gray-600 shrink-0"></i>
-                <span>Smart TV not recommended</span>
-              </li>
-              <li class="flex items-center gap-2.5 text-gray-500">
-                <i data-lucide="x" class="w-4 h-4 text-gray-600 shrink-0"></i>
-                <span>No custom PIN lock</span>
-              </li>
-            </ul>
-          </div>
-
-          <div class="mt-8 pt-4 border-t border-white/5">
-            <button onclick="startCheckout('Economy Screen', 1)" class="w-full py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-sm transition-all border border-white/10 hover:border-white/20 flex items-center justify-center gap-2">
-              <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-              <span>Order Economy</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- PLAN 2: Private Profile PIN (Featured) -->
-        <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between relative transition-all duration-300 border-2 border-red-500/60 shadow-2xl shadow-red-950/50 scale-[1.02] bg-[#14141c]">
-          <!-- Featured Badge -->
-          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-[11px] uppercase tracking-wider shadow-lg shadow-red-600/40 flex items-center gap-1.5">
-            <i data-lucide="flame" class="w-3.5 h-3.5 fill-white"></i> Most Popular Choice
-          </div>
-
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-red-500/20 text-red-300 border border-red-500/30">PIN Protected</span>
-              <span class="text-xs font-medium text-emerald-400 flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Instant Link
-              </span>
-            </div>
-            <h3 class="text-2xl font-bold text-white mt-4 flex items-center gap-2">
-              Private 4K Profile
-              <i data-lucide="shield-check" class="w-5 h-5 text-red-400"></i>
-            </h3>
-            <p class="text-xs text-gray-400 mt-1">Your own dedicated profile with 4-digit PIN lock & personalized algorithms.</p>
-
-            <div class="mt-6 flex items-baseline gap-2">
-              <span class="text-3xl sm:text-4xl font-black text-white" id="price-plan-2">NPR 799</span>
-              <span class="text-xs text-gray-500 line-through" id="original-plan-2">NPR 1,450</span>
-              <span class="text-xs text-gray-400" id="duration-label-2">/ 3 Months</span>
-            </div>
-
-            <!-- Perks List -->
-            <ul class="mt-6 space-y-3 text-xs text-gray-200">
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span><strong>Ultra HD 4K + HDR10 + Dolby Vision</strong></span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span><strong>Personal 4-digit PIN lock</strong> (Private & secure)</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>Works on <strong>Smart TV, FireStick, PS5, Phone</strong></span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span><strong>Zero Household Lockout:</strong> Bypass tech included</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>Offline Downloads enabled</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>24/7 Priority WhatsApp Replacement</span>
-              </li>
-            </ul>
-          </div>
-
-          <div class="mt-8 pt-4 border-t border-white/10">
-            <button onclick="startCheckout('Private 4K Profile', 2)" class="w-full py-3.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-bold text-sm shadow-xl shadow-red-600/30 transition-all flex items-center justify-center gap-2">
-              <i data-lucide="zap" class="w-4 h-4 fill-white"></i>
-              <span>Get Private Profile Now</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- PLAN 3: Full Private Account -->
-        <div class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between relative transition-all duration-300">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30">Family / Friends</span>
-              <span class="text-xs font-medium text-emerald-400 flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Available
-              </span>
-            </div>
-            <h3 class="text-xl font-bold text-white mt-4">Full Private Account</h3>
-            <p class="text-xs text-gray-400 mt-1">Entire Netflix Premium account to yourself. Change password & email.</p>
-
-            <div class="mt-6 flex items-baseline gap-2">
-              <span class="text-3xl sm:text-4xl font-black text-white" id="price-plan-3">NPR 2,499</span>
-              <span class="text-xs text-gray-500 line-through" id="original-plan-3">NPR 4,200</span>
-              <span class="text-xs text-gray-400" id="duration-label-3">/ 3 Months</span>
-            </div>
-
-            <!-- Perks List -->
-            <ul class="mt-6 space-y-3 text-xs text-gray-300">
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span><strong>5 Profiles & 4 Screens</strong> simultaneous viewing</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>Ultra HD 4K + Dolby Atmos Sound</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>Full Account Credentials (Master Login)</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>Personal Email activation option</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>Share with your family & friends</span>
-              </li>
-              <li class="flex items-center gap-2.5">
-                <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-                <span>Full Period Guarantee & 24/7 VIP support</span>
-              </li>
-            </ul>
-          </div>
-
-          <div class="mt-8 pt-4 border-t border-white/5">
-            <button onclick="startCheckout('Full Private Account', 3)" class="w-full py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-sm transition-all border border-white/10 hover:border-white/20 flex items-center justify-center gap-2">
-              <i data-lucide="users" class="w-4 h-4"></i>
-              <span>Order Full Account</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Guarantee Banner under Pricing -->
-      <div class="mt-12 p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-            <i data-lucide="check-check" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <h4 class="text-sm font-bold text-white">Full Replacement Warranty</h4>
-            <p class="text-xs text-gray-400">If Netflix ever prompts for household verification or lockout, our team replaces it promptly.</p>
-          </div>
-        </div>
-        <a href="#how-it-works" class="text-xs font-semibold text-red-400 hover:text-red-300 underline shrink-0">
-          Learn How It Works &rarr;
-        </a>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Features Deep Dive Section -->
-  <section id="features" class="py-20 bg-[#0a0a0f] border-t border-b border-white/5">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-2xl mx-auto mb-16">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-red bg-red-950/60 px-3 py-1 rounded-full border border-red-500/30">
-          Ultra HD Features
-        </span>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">Why Stream With FlixPass?</h2>
-        <p class="text-gray-400 text-sm mt-2">Engineered to give you premium streaming without regional blocks, household lockouts, or high costs.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Feature 1 -->
-        <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
-          <div class="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center text-brand-red mb-4">
-            <i data-lucide="monitor-play" class="w-5 h-5"></i>
-          </div>
-          <h4 class="text-lg font-bold text-white">4K UHD & Dolby Vision</h4>
-          <p class="text-xs text-gray-400 mt-2 leading-relaxed">
-            Experience true 3840 x 2160 resolution with rich HDR10 and Dolby Vision for cinema-grade colors and deep black levels on your OLED & 4K TVs.
-          </p>
-        </div>
-
-        <!-- Feature 2 -->
-        <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
-          <div class="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center text-brand-red mb-4">
-            <i data-lucide="headphones" class="w-5 h-5"></i>
-          </div>
-          <h4 class="text-lg font-bold text-white">Spatial Dolby Atmos Audio</h4>
-          <p class="text-xs text-gray-400 mt-2 leading-relaxed">
-            Immersive 3D audio directly sent to your soundbar or headphones. Hear footsteps and ambient cinema effects with unmatched directional clarity.
-          </p>
-        </div>
-
-        <!-- Feature 3 -->
-        <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
-          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
-            <i data-lucide="shield-alert" class="w-5 h-5"></i>
-          </div>
-          <h4 class="text-lg font-bold text-white">No Household Lockouts</h4>
-          <p class="text-xs text-gray-400 mt-2 leading-relaxed">
-            Our accounts are configured to bypass the annoying "Netflix Household / Travelling" verification codes. Stream freely from any Wi-Fi or mobile network.
-          </p>
-        </div>
-
-        <!-- Feature 4 -->
-        <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
-          <div class="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-4">
-            <i data-lucide="lock" class="w-5 h-5"></i>
-          </div>
-          <h4 class="text-lg font-bold text-white">Private Profile PIN Protection</h4>
-          <p class="text-xs text-gray-400 mt-2 leading-relaxed">
-            Set your own secret 4-digit PIN code. No one else can open your profile, view your watch history, or tamper with your algorithm recommendations.
-          </p>
-        </div>
-
-        <!-- Feature 5 -->
-        <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
-          <div class="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-4">
-            <i data-lucide="download-cloud" class="w-5 h-5"></i>
-          </div>
-          <h4 class="text-lg font-bold text-white">Offline Downloads</h4>
-          <p class="text-xs text-gray-400 mt-2 leading-relaxed">
-            Download your favorite series and movies directly onto your iOS, Android, or Windows device and watch them anywhere on flights or trips without internet.
-          </p>
-        </div>
-
-        <!-- Feature 6 -->
-        <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
-          <div class="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
-            <i data-lucide="zap" class="w-5 h-5"></i>
-          </div>
-          <h4 class="text-lg font-bold text-white">Fast Activation Support</h4>
-          <p class="text-xs text-gray-400 mt-2 leading-relaxed">
-            Direct WhatsApp confirmation ensures your designated profile credentials and PIN are handed over directly to you without hassle.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- How It Works Section -->
-  <section id="how-it-works" class="py-20 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-2xl mx-auto mb-16">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-red bg-red-950/60 px-3 py-1 rounded-full border border-red-500/30">
-          Simple 3-Step Setup
-        </span>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">How To Activate Your Account</h2>
-        <p class="text-gray-400 text-sm mt-2">Get up and streaming in less than two minutes from your order completion.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-        <!-- Step 1 -->
-        <div class="glass-card rounded-2xl p-8 relative border-t-2 border-t-red-600">
-          <div class="w-12 h-12 rounded-xl bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center text-xl font-black mb-6">
-            1
-          </div>
-          <h3 class="text-xl font-bold text-white">Choose Your Plan</h3>
-          <p class="text-xs text-gray-400 mt-3 leading-relaxed">
-            Select your preferred duration and plan. Enter your email and WhatsApp contact for account delivery.
-          </p>
-        </div>
-
-        <!-- Step 2 -->
-        <div class="glass-card rounded-2xl p-8 relative border-t-2 border-t-red-600">
-          <div class="w-12 h-12 rounded-xl bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center text-xl font-black mb-6">
-            2
-          </div>
-          <h3 class="text-xl font-bold text-white">Scan QR & Confirm</h3>
-          <p class="text-xs text-gray-400 mt-3 leading-relaxed">
-            Scan the eSewa or Khalti QR code right on the screen. Tap confirm to send your order directly to WhatsApp.
-          </p>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="glass-card rounded-2xl p-8 relative border-t-2 border-t-red-600">
-          <div class="w-12 h-12 rounded-xl bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center text-xl font-black mb-6">
-            3
-          </div>
-          <h3 class="text-xl font-bold text-white">Log in & Watch 4K</h3>
-          <p class="text-xs text-gray-400 mt-3 leading-relaxed">
-            Receive your login email, master password, and assigned PIN. Sign into the Netflix app and start watching!
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Frequently Asked Questions Section -->
-  <section id="faq" class="py-16 bg-[#0a0a0f] border-t border-white/5">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <span class="text-xs font-bold uppercase tracking-widest text-brand-red bg-red-950/60 px-3 py-1 rounded-full border border-red-500/30">
-          Questions & Answers
-        </span>
-        <h2 class="text-3xl font-extrabold text-white mt-3">Frequently Asked Questions</h2>
-        <p class="text-gray-400 text-xs sm:text-sm mt-2">Everything you need to know about our Netflix subscriptions.</p>
-      </div>
-
-      <div class="space-y-4">
-        <!-- FAQ 1 -->
-        <div class="glass-card rounded-xl overflow-hidden border border-white/10">
-          <button onclick="toggleFaq(1)" class="w-full text-left p-5 flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-red-400 transition-colors">
-            <span>Will I face the "Netflix Household" restriction error?</span>
-            <i data-lucide="chevron-down" id="faq-icon-1" class="w-4 h-4 text-gray-400 transition-transform"></i>
-          </button>
-          <div id="faq-answer-1" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
-            No! All our private and premium profile slots are pre-configured with household bypass compatibility. If Netflix ever displays an email code confirmation banner, we provide immediate verification via WhatsApp.
-          </div>
-        </div>
-
-        <!-- FAQ 2 -->
-        <div class="glass-card rounded-xl overflow-hidden border border-white/10">
-          <button onclick="toggleFaq(2)" class="w-full text-left p-5 flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-red-400 transition-colors">
-            <span>Can I set my own PIN on my profile?</span>
-            <i data-lucide="chevron-down" id="faq-icon-2" class="w-4 h-4 text-gray-400 transition-transform"></i>
-          </button>
-          <div id="faq-answer-2" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
-            Yes! With the <strong>Private 4K Profile</strong> and <strong>Full Private Account</strong>, you have a private 4-digit PIN lock so no other user can access your watchlist or recommendations.
-          </div>
-        </div>
-
-        <!-- FAQ 3 -->
-        <div class="glass-card rounded-xl overflow-hidden border border-white/10">
-          <button onclick="toggleFaq(3)" class="w-full text-left p-5 flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-red-400 transition-colors">
-            <span>How fast do I receive the credentials after payment?</span>
-            <i data-lucide="chevron-down" id="faq-icon-3" class="w-4 h-4 text-gray-400 transition-transform"></i>
-          </button>
-          <div id="faq-answer-3" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
-            Once you send the payment confirmation on WhatsApp, your credentials are provided directly to you within a few minutes.
-          </div>
-        </div>
-
-        <!-- FAQ 4 -->
-        <div class="glass-card rounded-xl overflow-hidden border border-white/10">
-          <button onclick="toggleFaq(4)" class="w-full text-left p-5 flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-red-400 transition-colors">
-            <span>What happens if the account stops working before my plan ends?</span>
-            <i data-lucide="chevron-down" id="faq-icon-4" class="w-4 h-4 text-gray-400 transition-transform"></i>
-          </button>
-          <div id="faq-answer-4" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
-            We provide a <strong>100% Full Period Replacement Warranty</strong>. If an account experiences any technical issues, reach out on WhatsApp and we replace your profile or fix it immediately.
-          </div>
-        </div>
-
-        <!-- FAQ 5 -->
-        <div class="glass-card rounded-xl overflow-hidden border border-white/10">
-          <button onclick="toggleFaq(5)" class="w-full text-left p-5 flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-red-400 transition-colors">
-            <span>Can I watch on my Smart TV and Apple TV?</span>
-            <i data-lucide="chevron-down" id="faq-icon-5" class="w-4 h-4 text-gray-400 transition-transform"></i>
-          </button>
-          <div id="faq-answer-5" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
-            Yes! Both the Private 4K Profile and Full Account support Smart TVs (Samsung, LG, Sony, Android TV, Google TV), Apple TV, Fire TV Stick, PlayStation 5, Xbox Series X, mobile phones, and computers.
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="bg-black/90 border-t border-white/10 pt-14 pb-8 text-xs text-gray-400">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-12 border-b border-white/10">
-        
-        <!-- Col 1: Brand Info -->
-        <div class="space-y-3">
-          <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-md bg-brand-red flex items-center justify-center font-bold text-white text-sm">N</div>
-            <span class="font-bold text-base text-white">FLIX<span class="text-brand-red">PASS</span></span>
-          </div>
-          <p class="text-gray-400 leading-relaxed text-[11px]">
-            Trusted digital entertainment concierge service. Providing officially secured Netflix 4K profiles with instant automated delivery and replacement warranty.
-          </p>
-          <div class="flex items-center gap-2 text-white">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="text-[11px] text-emerald-400 font-medium">All Systems Operational</span>
-          </div>
-        </div>
-
-        <!-- Col 2: Navigation Links -->
-        <div class="space-y-2">
-          <h4 class="text-sm font-semibold text-white">Quick Links</h4>
-          <ul class="space-y-1.5 text-[11px]">
-            <li><a href="#plans" class="hover:text-white transition-colors">Pricing & Plans</a></li>
-            <li><a href="#features" class="hover:text-white transition-colors">4K Ultra HD Benefits</a></li>
-            <li><a href="#how-it-works" class="hover:text-white transition-colors">Activation Guide</a></li>
-            <li><a href="#faq" class="hover:text-white transition-colors">Frequently Asked Questions</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 3: Payment Options -->
-        <div class="space-y-2">
-          <h4 class="text-sm font-semibold text-white">Accepted Payments</h4>
-          <p class="text-[11px] text-gray-400">Instant Nepali & Global payments accepted:</p>
-          <div class="flex flex-wrap gap-1.5 text-[10px] font-medium text-gray-300 pt-1">
-            <span class="px-2 py-1 bg-white/5 border border-white/10 rounded">eSewa</span>
-            <span class="px-2 py-1 bg-white/5 border border-white/10 rounded">Khalti</span>
-            <span class="px-2 py-1 bg-white/5 border border-white/10 rounded">Bank QR</span>
-            <span class="px-2 py-1 bg-white/5 border border-white/10 rounded">IME Pay</span>
-            <span class="px-2 py-1 bg-white/5 border border-white/10 rounded">USDT (Crypto)</span>
-          </div>
-        </div>
-
-        <!-- Col 4: Support & Contact -->
-        <div class="space-y-2">
-          <h4 class="text-sm font-semibold text-white">24/7 Priority Support</h4>
-          <p class="text-[11px] text-gray-400">Need immediate help with your profile or subscription?</p>
-          <div class="pt-1">
-            <button onclick="openWhatsAppChat('Hi Bikram! I have a question regarding Netflix subscriptions.')" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 font-semibold text-xs hover:bg-emerald-600/30 transition-colors">
-              <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
-              <span>WhatsApp Live Help</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="pt-8 text-center text-[11px] text-gray-500">
-        FlixPass is an independent subscription concierge service. Netflix is a registered trademark of Netflix, Inc.
-      </div>
-    </div>
-  </footer>
-
-  <!-- ======================================================== -->
-  <!-- SINGLE DEFINITIVE CHECKOUT & PAYMENT MODAL -->
-  <!-- ======================================================== -->
-  <div id="checkout-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="glass-card bg-[#111116] border border-white/15 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200 max-h-[92vh] flex flex-col">
-      
-      <!-- Modal Header -->
-      <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-black/40 shrink-0">
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center text-white font-black text-sm">N</div>
-          <h3 class="text-base font-bold text-white" id="modal-heading">Complete Your Order</h3>
-        </div>
-        <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-white p-1 rounded-lg">
-          <i data-lucide="x" class="w-5 h-5"></i>
+      <div class="mt-8 pt-5 border-t border-white/10">
+        <button onclick="startCheckout('Shared 4K Profile', 1)" class="w-full py-3.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-sm transition-all border border-white/10 hover:border-white/25 flex items-center justify-center gap-2">
+          <i data-lucide="user-check" class="w-4 h-4 text-red-400"></i>
+          <span>Order Shared Profile</span>
         </button>
-      </div>
-
-      <!-- Scrollable Container -->
-      <div class="overflow-y-auto p-6 space-y-4">
-        
-        <!-- STEP 1: Customer Details & Summary -->
-        <div id="checkout-step-1" class="space-y-4">
-          <!-- Order Summary Card -->
-          <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
-            <div>
-              <div class="text-xs text-gray-400">Selected Subscription</div>
-              <div class="text-sm font-bold text-white" id="modal-plan-title">Private 4K Profile</div>
-              <div class="text-xs text-red-400 font-medium" id="modal-plan-duration">3 Months Plan</div>
-            </div>
-            <div class="text-right">
-              <div class="text-xs text-gray-400">Total Due</div>
-              <div class="text-lg font-black text-emerald-400" id="modal-total-price">NPR 799</div>
-            </div>
-          </div>
-
-          <!-- User Information Fields -->
-          <div class="space-y-3">
-            <div>
-              <label class="block text-xs font-semibold text-gray-300 mb-1">Email for Account Credentials *</label>
-              <div class="relative">
-                <i data-lucide="mail" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
-                <input type="email" id="customer-email" placeholder="you@example.com" class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 transition-colors">
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-gray-300 mb-1">WhatsApp Number (For Instant Activation) *</label>
-              <div class="relative">
-                <i data-lucide="phone" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
-                <input type="tel" id="customer-phone" placeholder="98XXXXXXXX / +977..." class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 transition-colors">
-              </div>
-            </div>
-          </div>
-
-          <!-- Promo Code Input -->
-          <div class="pt-1">
-            <div class="flex gap-2">
-              <input type="text" id="coupon-code" placeholder="Discount Code (e.g. NETFLIX20)" class="w-full px-3 py-2 text-xs rounded-lg bg-white/5 border border-white/10 text-white uppercase placeholder-gray-500 focus:outline-none focus:border-red-500">
-              <button onclick="applyCoupon()" class="px-3 py-2 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-lg text-gray-200 shrink-0">Apply</button>
-            </div>
-            <div id="coupon-msg" class="text-[11px] mt-1 hidden"></div>
-          </div>
-
-          <!-- Proceed to QR Payment Button -->
-          <button onclick="goToPaymentStep()" class="w-full py-3 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-bold text-sm shadow-xl shadow-red-600/30 transition-all flex items-center justify-center gap-2 mt-2">
-            <span>Proceed to Payment (eSewa / Khalti QR)</span>
-            <i data-lucide="arrow-right" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <!-- STEP 2: eSewa / Khalti QR Payment & WhatsApp Action -->
-        <div id="checkout-step-2" class="hidden space-y-4">
-          <!-- Total Price Banner -->
-          <div class="bg-gradient-to-r from-emerald-950/70 to-black p-3.5 rounded-xl border border-emerald-500/30 flex items-center justify-between">
-            <div>
-              <span class="text-[11px] text-gray-400 block">Payable Amount</span>
-              <span class="text-xl font-black text-emerald-400" id="qr-modal-price">NPR 799</span>
-            </div>
-            <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 text-xs font-bold rounded-lg border border-emerald-500/30">
-              Order <span id="qr-order-id">#FP-9284</span>
-            </span>
-          </div>
-
-          <!-- Payment Method Selector Tabs -->
-          <div class="grid grid-cols-3 gap-1.5 p-1 bg-white/5 rounded-xl border border-white/10 text-xs font-semibold">
-            <button onclick="switchQrMethod('esewa')" id="tab-esewa" class="py-2 rounded-lg bg-emerald-600 text-white transition-all">eSewa</button>
-            <button onclick="switchQrMethod('khalti')" id="tab-khalti" class="py-2 rounded-lg text-gray-400 hover:text-white transition-all">Khalti</button>
-            <button onclick="switchQrMethod('direct')" id="tab-direct" class="py-2 rounded-lg text-gray-400 hover:text-white transition-all">Bank / Direct</button>
-          </div>
-
-          <!-- QR Code Container -->
-          <div id="qr-box-container" class="bg-black/60 rounded-xl p-4 border border-white/10 text-center space-y-3">
-            <p class="text-xs text-gray-300">
-              Scan with your <strong class="text-white" id="qr-gateway-name">eSewa App</strong>:
-            </p>
-
-            <div class="relative inline-block p-2.5 bg-white rounded-xl shadow-lg shadow-black/60">
-              <img id="dynamic-qr-image" src="" alt="Payment QR Code" class="w-48 h-48 sm:w-52 sm:h-52 object-contain mx-auto rounded-lg">
-              <div id="qr-logo-badge" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <span class="bg-black/85 px-2.5 py-1 rounded text-[10px] font-black tracking-wider text-emerald-400 border border-emerald-400/40" id="qr-center-text">ESEWA PAY</span>
-              </div>
-            </div>
-
-            <!-- Manual Account ID & Copy -->
-            <div class="flex items-center justify-center gap-2 text-xs">
-              <span class="text-gray-400" id="qr-id-label">eSewa ID:</span>
-              <span class="text-white font-mono font-bold bg-white/10 px-2 py-0.5 rounded" id="qr-account-id">98XXXXXXXX</span>
-              <button onclick="copyWalletId()" class="text-emerald-400 hover:text-emerald-300 font-semibold underline text-[11px]">Copy ID</button>
-            </div>
-          </div>
-
-          <!-- Direct Chat / Bank Instructions -->
-          <div id="direct-chat-info" class="hidden bg-white/5 p-4 rounded-xl border border-white/10 text-xs text-gray-300 space-y-2">
-            <p class="font-semibold text-white">Bank Transfer / Custom Inquiries:</p>
-            <p>Connect directly with Bikram on WhatsApp to receive bank account details (Nabil / Global IME) or assistance.</p>
-          </div>
-
-          <!-- Transaction ID / Reference Input -->
-          <div>
-            <label class="block text-xs font-semibold text-gray-300 mb-1">eSewa / Khalti Transaction ID (Optional)</label>
-            <div class="relative">
-              <i data-lucide="receipt" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
-              <input type="text" id="transaction-id" placeholder="e.g. 1029384756 (or leave empty)" class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors">
-            </div>
-          </div>
-
-          <!-- Confirm & Send to WhatsApp Button -->
-          <button onclick="submitOrderToWhatsApp()" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
-            <i data-lucide="message-circle" class="w-5 h-5 fill-white"></i>
-            <span>Confirm & Send Order via WhatsApp</span>
-          </button>
-
-          <!-- Back Button -->
-          <div class="flex items-center justify-between text-xs pt-1">
-            <button onclick="goBackToStep1()" class="text-gray-400 hover:text-white flex items-center gap-1">
-              <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back to Details
-            </button>
-            <span class="text-gray-500 text-[11px]">Instant WhatsApp Verification</span>
-          </div>
-        </div>
-
-        <!-- STEP 3: Order Submitted Confirmation (After WhatsApp Launch) -->
-        <div id="checkout-step-3" class="hidden space-y-4 text-center">
-          <div class="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto mb-2">
-            <i data-lucide="check-check" class="w-7 h-7"></i>
-          </div>
-          <h4 class="text-xl font-bold text-white">Order Registered!</h4>
-          <p class="text-xs text-gray-300 max-w-sm mx-auto leading-relaxed">
-            Your order details have been forwarded to our WhatsApp fulfillment desk. Please make sure you send the WhatsApp message and your payment screenshot.
-          </p>
-
-          <div class="bg-black/50 border border-white/10 rounded-xl p-3.5 text-xs text-left space-y-2 font-mono">
-            <div class="flex justify-between border-b border-white/5 pb-1.5">
-              <span class="text-gray-400">Order ID:</span>
-              <span class="text-emerald-400 font-bold" id="confirm-order-id">#FP-0000</span>
-            </div>
-            <div class="flex justify-between border-b border-white/5 pb-1.5">
-              <span class="text-gray-400">Subscription:</span>
-              <span class="text-white" id="confirm-plan-name">Private 4K Profile</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-gray-400">Delivery Channel:</span>
-              <span class="text-emerald-400 font-semibold">WhatsApp & Registered Email</span>
-            </div>
-          </div>
-
-          <div class="pt-2 flex flex-col gap-2">
-            <button onclick="reopenWhatsApp()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center justify-center gap-2">
-              <i data-lucide="message-circle" class="w-4 h-4"></i>
-              <span>Re-open WhatsApp Chat</span>
-            </button>
-            <button onclick="closeCheckoutModal()" class="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-gray-300 hover:text-white font-semibold text-xs">
-              Close Window
-            </button>
-          </div>
-        </div>
-
+        <p class="text-[10px] text-center text-gray-500 mt-2">Credentials delivered to WhatsApp in 1–5 mins</p>
       </div>
     </div>
+
+    <!-- OPTION 2: Personal Email VIP Upgrade (Payment Made By Me) -->
+    <div class="glass-card rounded-2xl p-7 sm:p-8 flex flex-col justify-between relative transition-all duration-300 border-2 border-red-500/60 shadow-2xl shadow-red-950/50 bg-[#14141d]">
+      <!-- Featured Badge -->
+      <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-red-600 via-rose-600 to-red-600 text-white font-bold text-[11px] uppercase tracking-wider shadow-lg shadow-red-600/50 flex items-center gap-1.5 whitespace-nowrap">
+        <i data-lucide="crown" class="w-3.5 h-3.5 text-yellow-300 fill-yellow-300"></i> VIP Most Requested
+      </div>
+
+      <div>
+        <!-- Top Badges -->
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold px-3 py-1 rounded-md bg-red-500/20 text-red-300 border border-red-500/30">Option 2: Your Own Email</span>
+          <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-1">
+            <i data-lucide="shield-check" class="w-3 h-3 text-purple-400"></i> 100% Private
+          </span>
+        </div>
+
+        <h3 class="text-2xl font-bold text-white mt-4 flex items-center gap-2">
+          Personal Email VIP Upgrade
+        </h3>
+        <p class="text-xs text-gray-300 mt-1 leading-relaxed">
+          We activate official Netflix Premium directly on <strong>your own personal email</strong>. Keep your watch history, recommendations, and share all 5 profiles with your family!
+        </p>
+
+        <div class="mt-6 flex items-baseline gap-2">
+          <span class="text-4xl font-black text-white" id="price-plan-2">NPR 2,199</span>
+          <span class="text-xs text-gray-500 line-through" id="original-plan-2">NPR 3,600</span>
+          <span class="text-xs text-gray-400" id="duration-label-2">/ 3 Months</span>
+        </div>
+
+        <!-- Perks List -->
+        <ul class="mt-6 space-y-3.5 text-xs text-gray-200">
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span><strong>Activated directly on your personal email</strong></span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span><strong>Preserves all watch history</strong>, continue watching & algorithms</span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span><strong>5 Profiles & 4 Screens</strong> simultaneous viewing for family</span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span>Payment and international billing completely handled by us</span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span>Ultra HD 4K + HDR10 + Spatial Dolby Atmos Sound</span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span><strong>Zero Account Reclamation Risk</strong> (You control the inbox)</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="mt-8 pt-5 border-t border-white/10">
+        <button onclick="startCheckout('Personal Email VIP Upgrade', 2)" class="w-full py-3.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-bold text-sm shadow-xl shadow-red-600/35 transition-all flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
+          <i data-lucide="sparkles" class="w-4 h-4 fill-white"></i>
+          <span>Upgrade My Own Account</span>
+        </button>
+        <p class="text-[10px] text-center text-gray-400 mt-2">⏱ Manual activation turnaround: 1–3 hours</p>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Order Tracking Modal -->
-  <div id="track-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="glass-card bg-[#111116] border border-white/15 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl p-6">
-      <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
-        <div class="flex items-center gap-2">
-          <i data-lucide="search" class="w-5 h-5 text-red-500"></i>
-          <h3 class="text-base font-bold text-white">Find My Subscription</h3>
-        </div>
-        <button onclick="closeTrackModal()" class="text-gray-400 hover:text-white">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+  <!-- Guarantee Banner under Pricing -->
+  <div class="mt-12 p-4 rounded-xl bg-white/5 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left max-w-5xl mx-auto">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+        <i data-lucide="check-check" class="w-5 h-5"></i>
       </div>
-
-      <div class="space-y-3">
-        <p class="text-xs text-gray-400">Enter your registered email to check status or request a replacement.</p>
-        <div>
-          <label class="block text-xs font-semibold text-gray-300 mb-1">Registered Email</label>
-          <input type="email" id="track-email-input" placeholder="e.g. buyer@example.com" class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
-        </div>
-
-        <button onclick="lookupOrder()" class="w-full py-2.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-semibold text-xs transition-all flex items-center justify-center gap-2">
-          <i data-lucide="key" class="w-4 h-4"></i>
-          <span>Lookup Subscription</span>
-        </button>
-
-        <div id="track-result-box" class="hidden mt-4 p-3.5 bg-black/50 border border-white/10 rounded-xl text-xs space-y-2"></div>
+      <div>
+        <h4 class="text-sm font-bold text-white">Full Replacement Warranty & Guarantee</h4>
+        <p class="text-xs text-gray-400">Whether you pick Shared or Personal Email Upgrade, you are 100% protected for your entire subscription duration.</p>
       </div>
     </div>
+    <a href="#how-it-works" class="text-xs font-semibold text-red-400 hover:text-red-300 underline shrink-0">
+      How Upgrade Works &rarr;
+    </a>
   </div>
 
-  <!-- Floating Live Notification Toast -->
-  <div id="live-toast" class="fixed bottom-5 left-5 z-40 max-w-sm glass-card bg-[#14141d]/90 border border-white/10 p-3 rounded-xl shadow-2xl transition-all duration-500 translate-y-24 opacity-0 pointer-events-none flex items-center gap-3">
-    <div class="w-8 h-8 rounded-lg bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center shrink-0">
-      <i data-lucide="tv" class="w-4 h-4"></i>
+</div>
+
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Feature 1 -->
+    <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
+      <div class="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center text-brand-red mb-4">
+        <i data-lucide="mail-check" class="w-5 h-5"></i>
+      </div>
+      <h4 class="text-lg font-bold text-white">Keep Your Own Email & History</h4>
+      <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+        With our VIP Personal Email Upgrade, you never lose your "Continue Watching" queue, watchlist, or favorite recommendations. We activate Netflix right on your existing login.
+      </p>
     </div>
-    <div class="text-xs">
-      <p class="text-white font-semibold" id="toast-text">Sujal from Kathmandu purchased Private 4K (3 Months)</p>
-      <p class="text-[10px] text-emerald-400 flex items-center gap-1 mt-0.5">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Verified Activation • 2 mins ago
+
+    <!-- Feature 2 -->
+    <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
+      <div class="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/30 flex items-center justify-center text-brand-red mb-4">
+        <i data-lucide="tv" class="w-5 h-5"></i>
+      </div>
+      <h4 class="text-lg font-bold text-white">True 4K UHD & Dolby Vision</h4>
+      <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+        Uncapped 3840 x 2160 resolution with rich HDR10 colors and Dolby Atmos spatial audio for cinema-grade viewing on your 4K Smart TVs and home theaters.
+      </p>
+    </div>
+
+    <!-- Feature 3 -->
+    <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
+      <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
+        <i data-lucide="shield-alert" class="w-5 h-5"></i>
+      </div>
+      <h4 class="text-lg font-bold text-white">No Household Lockout Headaches</h4>
+      <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+        Forget about the annoying "Netflix Household / Travelling" error messages. Stream cleanly from home Wi-Fi, WorldLink, Ncell, or mobile hotspot without IP issues.
+      </p>
+    </div>
+
+    <!-- Feature 4 -->
+    <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
+      <div class="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 mb-4">
+        <i data-lucide="lock" class="w-5 h-5"></i>
+      </div>
+      <h4 class="text-lg font-bold text-white">Dedicated PIN Protection</h4>
+      <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+        Your profile comes secured with your chosen 4-digit PIN code. No other viewer can open your profile or interfere with your personalized shows.
+      </p>
+    </div>
+
+    <!-- Feature 5 -->
+    <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
+      <div class="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-4">
+        <i data-lucide="wallet" class="w-5 h-5"></i>
+      </div>
+      <h4 class="text-lg font-bold text-white">Local Nepali Currency (NPR)</h4>
+      <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+        No international dollar cards or currency exchange markups needed. Pay directly via eSewa, Khalti, or your Nepali Mobile Banking Fonepay QR.
+      </p>
+    </div>
+
+    <!-- Feature 6 -->
+    <div class="glass-card rounded-2xl p-6 hover:translate-y-[-2px] transition-all">
+      <div class="w-10 h-10 rounded-lg bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
+        <i data-lucide="message-circle" class="w-5 h-5"></i>
+      </div>
+      <h4 class="text-lg font-bold text-white">Direct WhatsApp Support</h4>
+      <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+        Managed personally by Bikram Acharya. If you ever have a question or need an account refresh, message directly on WhatsApp for rapid assistance.
       </p>
     </div>
   </div>
+</div>
 
-  <!-- Copied Notification Toast -->
-  <div id="copy-toast" class="fixed bottom-5 right-5 z-50 px-4 py-2 bg-emerald-600 text-white text-xs font-semibold rounded-lg shadow-xl transition-all duration-300 translate-y-12 opacity-0 pointer-events-none flex items-center gap-1.5">
-    <i data-lucide="check-circle" class="w-4 h-4"></i>
-    <span>Copied to clipboard!</span>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+    <!-- Step 1 -->
+    <div class="glass-card rounded-2xl p-8 relative border-t-2 border-t-red-600">
+      <div class="w-12 h-12 rounded-xl bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center text-xl font-black mb-6">
+        1
+      </div>
+      <h3 class="text-xl font-bold text-white">Choose Your Model</h3>
+      <p class="text-xs text-gray-400 mt-3 leading-relaxed">
+        Select <strong>Shared Profile</strong> (we provide credentials) or <strong>Personal Email Upgrade</strong> (you share your existing email to be activated).
+      </p>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="glass-card rounded-2xl p-8 relative border-t-2 border-t-red-600">
+      <div class="w-12 h-12 rounded-xl bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center text-xl font-black mb-6">
+        2
+      </div>
+      <h3 class="text-xl font-bold text-white">Scan & Confirm Payment</h3>
+      <p class="text-xs text-gray-400 mt-3 leading-relaxed">
+        Scan the eSewa, Khalti, or Fonepay QR code right from your phone. Tap submit to send your order directly to Bikram on WhatsApp.
+      </p>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="glass-card rounded-2xl p-8 relative border-t-2 border-t-red-600">
+      <div class="w-12 h-12 rounded-xl bg-red-600/20 text-red-400 border border-red-500/30 flex items-center justify-center text-xl font-black mb-6">
+        3
+      </div>
+      <h3 class="text-xl font-bold text-white">Start Streaming in 4K</h3>
+      <p class="text-xs text-gray-400 mt-3 leading-relaxed">
+        Shared profiles are dispatched within minutes. Personal email upgrades are activated within 1–3 hours. Log in and enjoy!
+      </p>
+    </div>
+  </div>
+</div>
+
+
+  <div class="space-y-4">
+    <!-- FAQ 1 -->
+    <div class="glass-card rounded-xl overflow-hidden border border-white/10">
+      <button onclick="toggleFaq(1)" class="w-full text-left p-5 flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-red-400 transition-colors">
+        <span>What is the difference between "Shared Profile" and "Personal Email Upgrade"?</span>
+        <i data-lucide="chevron-down" id="faq-icon-1" class="w-4 h-4 text-gray-400 transition-transform"></i>
+      </button>
+      <div id="faq-answer-1" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
+        In the <strong>Shared Profile</strong> model, we provide you with a pre-configured Netflix account login and assign you a dedicated profile with your own 4-digit PIN.<br><br>
+        In the <strong>Personal Email VIP Upgrade</strong>, we pay for and activate the subscription directly onto your <strong>own personal Netflix account</strong>. You keep your existing email, all your saved watch history, and you get all 5 profiles for your family.
+      </div>
+    </div>
+
+    <!-- FAQ 2 -->
+    <div class="glass-card rounded-xl overflow-hidden border border-white/10">
+      <button onclick="toggleFaq(2)" class="w-full text-left p-5 flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-red-400 transition-colors">
+        <span>Is my personal account safe during the VIP upgrade?</span>
+        <i data-lucide="chevron-down" id="faq-icon-2" class="w-4 h-4 text-gray-400 transition-transform"></i>
+      </button>
+      <div id="faq-answer-2" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
+        100% safe. You can set a temporary password before sharing your login credentials for the billing activation. Once we bind the payment and activate the Premium plan, you can immediately change your password. Because you own the registered email inbox, you have complete ownership.
+      </div>
+    </div>
+
+    <!-- FAQ 3 -->
+    <div class="glass-card rounded-xl overflow-hidden border border-white/10">
+      <button onclick="toggleFaq(3)" class="w-full text-left p-5 flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-red-400 transition-colors">
+        <span>Does my personal account need to be expired first?</span>
+        <i data-lucide="chevron-down" id="faq-icon-3" class="w-4 h-4 text-gray-400 transition-transform"></i>
+      </button>
+      <div id="faq-answer-3" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
+        Yes. Netflix does not allow changing billing regions on an account that currently has an active subscription running. Ensure your current plan has reached its expiry date before ordering the Personal Email VIP Upgrade.
+      </div>
+    </div>
+
+    <!-- FAQ 4 -->
+    <div class="glass-card rounded-xl overflow-hidden border border-white/10">
+      <button onclick="toggleFaq(4)" class="w-full text-left p-5 flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-red-400 transition-colors">
+        <span>What happens if the account encounters an issue before my term ends?</span>
+        <i data-lucide="chevron-down" id="faq-icon-4" class="w-4 h-4 text-gray-400 transition-transform"></i>
+      </button>
+      <div id="faq-answer-4" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
+        Every subscription comes with a <strong>100% Full Period Warranty</strong>. If any technical difficulty occurs, message Bikram on WhatsApp and we will resolve it promptly or issue an immediate replacement.
+      </div>
+    </div>
+
+    <!-- FAQ 5 -->
+    <div class="glass-card rounded-xl overflow-hidden border border-white/10">
+      <button onclick="toggleFaq(5)" class="w-full text-left p-5 flex items-center justify-between font-semibold text-white text-sm sm:text-base hover:text-red-400 transition-colors">
+        <span>Can I watch on my 4K Smart TV and gaming console?</span>
+        <i data-lucide="chevron-down" id="faq-icon-5" class="w-4 h-4 text-gray-400 transition-transform"></i>
+      </button>
+      <div id="faq-answer-5" class="hidden px-5 pb-5 text-xs sm:text-sm text-gray-300 leading-relaxed border-t border-white/5 pt-3">
+        Yes! Both options work seamlessly on Smart TVs (Samsung, LG, Sony, Android TV, Google TV), Apple TV, Fire TV Stick, PlayStation, Xbox, laptops, tablets, and phones.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <!-- Col 1: Brand Info -->
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-md bg-brand-red flex items-center justify-center font-bold text-white text-sm">N</div>
+        <span class="font-bold text-base text-white">FLIX<span class="text-brand-red">PASS</span></span>
+      </div>
+      <p class="text-gray-400 leading-relaxed text-[11px]">
+        Trusted digital subscription concierge managed by Bikram Acharya. Providing verified Netflix 4K profiles and personal account upgrades with full warranty.
+      </p>
+      <div class="flex items-center gap-2 text-white">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-[11px] text-emerald-400 font-medium">All Payment Gateways Active</span>
+      </div>
+    </div>
+
+    <!-- Col 2: Navigation Links -->
+    <div class="space-y-2">
+      <h4 class="text-sm font-semibold text-white">Quick Links</h4>
+      <ul class="space-y-1.5 text-[11px]">
+        <li><a href="#plans" class="hover:text-white transition-colors">Pricing & Plans</a></li>
+        <li><a href="#features" class="hover:text-white transition-colors">4K Ultra HD Benefits</a></li>
+        <li><a href="#how-it-works" class="hover:text-white transition-colors">Activation Process</a></li>
+        <li><a href="#faq" class="hover:text-white transition-colors">Frequently Asked Questions</a></li>
+      </ul>
+    </div>
+
+    <!-- Col 3: Payment Options -->
+    <div class="space-y-2">
+      <h4 class="text-sm font-semibold text-white">Accepted Payments</h4>
+      <p class="text-[11px] text-gray-400">Pay locally in Nepali Rupees (NPR):</p>
+      <div class="flex flex-wrap gap-1.5 text-[10px] font-medium text-gray-300 pt-1">
+        <span class="px-2 py-1 bg-white/5 border border-white/10 rounded">eSewa</span>
+        <span class="px-2 py-1 bg-white/5 border border-white/10 rounded">Khalti</span>
+        <span class="px-2 py-1 bg-white/5 border border-white/10 rounded">Nabil Fonepay</span>
+        <span class="px-2 py-1 bg-white/5 border border-white/10 rounded">Bank QR</span>
+      </div>
+    </div>
+
+    <!-- Col 4: Support & Contact -->
+    <div class="space-y-2">
+      <h4 class="text-sm font-semibold text-white">Direct Concierge Support</h4>
+      <p class="text-[11px] text-gray-400">WhatsApp direct with Bikram Acharya (9860874001):</p>
+      <div class="pt-1">
+        <button onclick="openWhatsAppChat('Hi Bikram! I have a question regarding Netflix subscriptions.')" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-600/20 border border-emerald-500/30 text-emerald-300 font-semibold text-xs hover:bg-emerald-600/30 transition-colors">
+          <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
+          <span>WhatsApp Live Help</span>
+        </button>
+      </div>
+    </div>
+
   </div>
 
-  <!-- ======================================================== -->
-  <!-- JAVASCRIPT APPLICATION LOGIC -->
-  <!-- ======================================================== -->
-  <script>
-    // Initialize Lucide Icons
-    lucide.createIcons();
+  <div class="pt-8 text-center text-[11px] text-gray-500">
+    FlixPass is an independent subscription concierge service. Netflix is a registered trademark of Netflix, Inc.
+  </div>
+</div>
 
-    // ==========================================
-    // ⚙️ SELLER CONFIGURATION (BIKRAM ACHARYA)
-    // Replace with your real contact & payment credentials
-    // ==========================================
-    const SELLER_CONFIG = {
-      // Your Nepali WhatsApp Number (Format: 97798XXXXXXXX without '+' or spaces)
-      whatsappNumber: "9779860874001",
+
+  <!-- Modal Header -->
+  <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-black/40 shrink-0">
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center text-white font-black text-sm">N</div>
+      <h3 class="text-base font-bold text-white" id="modal-heading">Complete Your Order</h3>
+    </div>
+    <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-white p-1 rounded-lg">
+      <i data-lucide="x" class="w-5 h-5"></i>
+    </button>
+  </div>
+
+  <!-- Scrollable Container -->
+  <div class="overflow-y-auto p-6 space-y-4">
+    
+    <!-- STEP 1: Customer Details & Summary -->
+    <div id="checkout-step-1" class="space-y-4">
       
-      // Your eSewa ID / Phone Number & Account Name
-      esewaId: "9860874001 (Bikram Acharya)",
-      
-      // Your Khalti ID / Phone Number
-      khaltiId: "9860874001 (Bikram Acharya)",
-      
-      // (Optional) Direct URL of your exported eSewa QR photo.
-      customEsewaQrUrl: "",
-      
-      // (Optional) Direct URL of your exported Khalti QR photo.
-      customKhaltiQrUrl: ""
-    };
+      <!-- Order Summary Card -->
+      <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+        <div>
+          <div class="text-xs text-gray-400">Selected Plan</div>
+          <div class="text-sm font-bold text-white" id="modal-plan-title">Shared 4K Profile</div>
+          <div class="text-xs text-red-400 font-medium" id="modal-plan-duration">3 Months Plan</div>
+        </div>
+        <div class="text-right">
+          <div class="text-xs text-gray-400">Total Payable</div>
+          <div class="text-lg font-black text-emerald-400" id="modal-total-price">NPR 799</div>
+        </div>
+      </div>
 
-    // State Variables
-    let currentCurrency = 'NPR';
-    let currentDuration = '3m';
-    let selectedPlanName = 'Private 4K Profile';
-    let selectedPlanId = 2;
-    let appliedDiscount = 0;
-    let currentQrMethod = 'esewa';
-    let generatedOrderId = '#FP-' + Math.floor(1000 + Math.random() * 9000);
-    let lastWhatsAppUrl = '';
-
-    // Currency Rates
-    const currencyRates = {
-      NPR: { symbol: 'NPR ', rate: 1 },
-      USD: { symbol: '$ ', rate: 0.0075 },
-      INR: { symbol: '₹ ', rate: 0.625 }
-    };
-
-    // Base Prices in NPR for 1 Month
-    const planBaseNPR = {
-      1: { name: 'Economy Screen', basePrice: 150, origBase: 250 },
-      2: { name: 'Private 4K Profile', basePrice: 320, origBase: 580 },
-      3: { name: 'Full Private Account', basePrice: 999, origBase: 1680 }
-    };
-
-    // Duration Multipliers & Savings
-    const durationMultipliers = {
-      '1m': { months: 1, discountFactor: 1.0, label: '/ 1 Month' },
-      '3m': { months: 3, discountFactor: 0.85, label: '/ 3 Months' },
-      '6m': { months: 6, discountFactor: 0.75, label: '/ 6 Months' },
-      '12m': { months: 12, discountFactor: 0.65, label: '/ 12 Months' },
-    };
-
-    function setCurrency(curr) {
-      currentCurrency = curr;
-      document.querySelectorAll('.curr-btn').forEach(btn => {
-        btn.classList.remove('bg-brand-red', 'text-white', 'shadow-sm');
-        btn.classList.add('text-gray-400');
-      });
-      const activeBtn = document.getElementById(`curr-${curr.toLowerCase()}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('text-gray-400');
-        activeBtn.classList.add('bg-brand-red', 'text-white', 'shadow-sm');
-      }
-      updatePriceDisplay();
-    }
-
-    function setDuration(dur) {
-      currentDuration = dur;
-      document.querySelectorAll('.dur-btn').forEach(btn => {
-        btn.classList.remove('bg-brand-red', 'text-white', 'shadow-md');
-        btn.classList.add('text-gray-400');
-      });
-      const activeBtn = document.getElementById(`dur-${dur}`);
-      if (activeBtn) {
-        activeBtn.classList.remove('text-gray-400');
-        activeBtn.classList.add('bg-brand-red', 'text-white', 'shadow-md');
-      }
-      updatePriceDisplay();
-    }
-
-    function calculatePrice(planId) {
-      const plan = planBaseNPR[planId];
-      const dur = durationMultipliers[currentDuration];
-      const rawNpr = Math.round(plan.basePrice * dur.months * dur.discountFactor);
-      const origNpr = Math.round(plan.origBase * dur.months);
-
-      const convRate = currencyRates[currentCurrency].rate;
-      const symbol = currencyRates[currentCurrency].symbol;
-
-      let finalPrice = Math.round(rawNpr * convRate);
-      let originalPrice = Math.round(origNpr * convRate);
-
-      if (currentCurrency === 'USD') {
-        finalPrice = (rawNpr * convRate).toFixed(2);
-        originalPrice = (origNpr * convRate).toFixed(2);
-      }
-
-      return {
-        formatted: `${symbol}${finalPrice}`,
-        formattedOriginal: `${symbol}${originalPrice}`,
-        numeric: finalPrice,
-        rawNpr: rawNpr,
-        label: dur.label
-      };
-    }
-
-    function updatePriceDisplay() {
-      for (let id = 1; id <= 3; id++) {
-        const prices = calculatePrice(id);
-        const priceEl = document.getElementById(`price-plan-${id}`);
-        const origEl = document.getElementById(`original-plan-${id}`);
-        const labelEl = document.getElementById(`duration-label-${id}`);
-
-        if (priceEl) priceEl.innerText = prices.formatted;
-        if (origEl) origEl.innerText = prices.formattedOriginal;
-        if (labelEl) labelEl.innerText = prices.label;
-      }
-    }
-
-    function startCheckout(planName, planId) {
-      selectedPlanName = planName;
-      selectedPlanId = planId;
-      appliedDiscount = 0;
-      generatedOrderId = '#FP-' + Math.floor(1000 + Math.random() * 9000);
-
-      const durText = durationMultipliers[currentDuration].months + " Month(s) Access";
-      const prices = calculatePrice(planId);
-
-      document.getElementById('modal-heading').innerText = "Complete Your Order";
-      document.getElementById('modal-plan-title').innerText = planName;
-      document.getElementById('modal-plan-duration').innerText = durText;
-      document.getElementById('modal-total-price').innerText = prices.formatted;
-
-      // Reset Modal Views: Show Step 1 only
-      document.getElementById('checkout-step-1').classList.remove('hidden');
-      document.getElementById('checkout-step-2').classList.add('hidden');
-      document.getElementById('checkout-step-3').classList.add('hidden');
-      document.getElementById('coupon-msg').classList.add('hidden');
-      document.getElementById('coupon-code').value = '';
-
-      document.getElementById('checkout-modal').classList.remove('hidden');
-      lucide.createIcons();
-    }
-
-    function closeCheckoutModal() {
-      document.getElementById('checkout-modal').classList.add('hidden');
-    }
-
-    function goToPaymentStep() {
-      const email = document.getElementById('customer-email').value.trim();
-      const phone = document.getElementById('customer-phone').value.trim();
-
-      if (!email || !email.includes('@')) {
-        showCopyToast("Please enter a valid email address.");
-        return;
-      }
-      if (!phone || phone.length < 7) {
-        showCopyToast("Please enter your active WhatsApp number.");
-        return;
-      }
-
-      const payableText = document.getElementById('modal-total-price').innerText;
-      document.getElementById('qr-modal-price').innerText = payableText;
-      document.getElementById('qr-order-id').innerText = generatedOrderId;
-      document.getElementById('modal-heading').innerText = "Scan QR & Pay";
-
-      // Render default eSewa QR
-      switchQrMethod('esewa');
-
-      document.getElementById('checkout-step-1').classList.add('hidden');
-      document.getElementById('checkout-step-2').classList.remove('hidden');
-      document.getElementById('checkout-step-3').classList.add('hidden');
-      lucide.createIcons();
-    }
-
-    function goBackToStep1() {
-      document.getElementById('modal-heading').innerText = "Complete Your Order";
-      document.getElementById('checkout-step-1').classList.remove('hidden');
-      document.getElementById('checkout-step-2').classList.add('hidden');
-      document.getElementById('checkout-step-3').classList.add('hidden');
-      lucide.createIcons();
-    }
-
-    function switchQrMethod(method) {
-      currentQrMethod = method;
-      const tabEsewa = document.getElementById('tab-esewa');
-      const tabKhalti = document.getElementById('tab-khalti');
-      const tabDirect = document.getElementById('tab-direct');
-      const qrBox = document.getElementById('qr-box-container');
-      const directBox = document.getElementById('direct-chat-info');
-
-      [tabEsewa, tabKhalti, tabDirect].forEach(tab => {
-        tab.className = "py-2 rounded-lg text-gray-400 hover:text-white transition-all";
-      });
-
-      const qrImg = document.getElementById('dynamic-qr-image');
-      const qrCenterText = document.getElementById('qr-center-text');
-      const qrGatewayName = document.getElementById('qr-gateway-name');
-      const qrIdLabel = document.getElementById('qr-id-label');
-      const qrAccountId = document.getElementById('qr-account-id');
-      const payableAmount = document.getElementById('qr-modal-price').innerText;
-
-      if (method === 'esewa') {
-        tabEsewa.className = "py-2 rounded-lg bg-emerald-600 text-white font-bold transition-all";
-        qrBox.classList.remove('hidden');
-        directBox.classList.add('hidden');
-        qrGatewayName.innerText = "eSewa App";
-        qrCenterText.innerText = "ESEWA PAY";
-        qrCenterText.className = "bg-black/85 px-2.5 py-1 rounded text-[10px] font-black tracking-wider text-emerald-400 border border-emerald-400/40";
-        qrIdLabel.innerText = "eSewa ID:";
-        qrAccountId.innerText = SELLER_CONFIG.esewaId;
-
-        if (SELLER_CONFIG.customEsewaQrUrl) {
-          qrImg.src = SELLER_CONFIG.customEsewaQrUrl;
-        } else {
-          const qrPayload = encodeURIComponent(`eSewa Pay: ${SELLER_CONFIG.esewaId} | Order: ${generatedOrderId} | Amount: ${payableAmount}`);
-          qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${qrPayload}&color=000000`;
-        }
-      } else if (method === 'khalti') {
-        tabKhalti.className = "py-2 rounded-lg bg-purple-600 text-white font-bold transition-all";
-        qrBox.classList.remove('hidden');
-        directBox.classList.add('hidden');
-        qrGatewayName.innerText = "Khalti App";
-        qrCenterText.innerText = "KHALTI PAY";
-        qrCenterText.className = "bg-black/85 px-2.5 py-1 rounded text-[10px] font-black tracking-wider text-purple-400 border border-purple-400/40";
-        qrIdLabel.innerText = "Khalti ID:";
-        qrAccountId.innerText = SELLER_CONFIG.khaltiId;
-
-        if (SELLER_CONFIG.customKhaltiQrUrl) {
-          qrImg.src = SELLER_CONFIG.customKhaltiQrUrl;
-        } else {
-          const qrPayload = encodeURIComponent(`Khalti Pay: ${SELLER_CONFIG.khaltiId} | Order: ${generatedOrderId} | Amount: ${payableAmount}`);
-          qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${qrPayload}&color=000000`;
-        }
-      } else if (method === 'direct') {
-        tabDirect.className = "py-2 rounded-lg bg-red-600 text-white font-bold transition-all";
-        qrBox.classList.add('hidden');
-        directBox.classList.remove('hidden');
-      }
-    }
-
-    function copyWalletId() {
-      const idText = document.getElementById('qr-account-id').innerText;
-      const dummy = document.createElement('textarea');
-      document.body.appendChild(dummy);
-      dummy.value = idText;
-      dummy.select();
-      document.execCommand('copy');
-      document.body.removeChild(dummy);
-      showCopyToast("Wallet ID copied!");
-    }
-
-    function submitOrderToWhatsApp() {
-      const email = document.getElementById('customer-email').value.trim();
-      const phone = document.getElementById('customer-phone').value.trim();
-      const txnId = document.getElementById('transaction-id').value.trim() || "Attaching payment screenshot";
-      const amount = document.getElementById('qr-modal-price').innerText;
-      const durationText = durationMultipliers[currentDuration].months + " Month(s)";
-
-      const message = 
-`🍿 *NEW NETFLIX SUBSCRIPTION ORDER*
-━━━━━━━━━━━━━━━━━━━━━━
-📌 *Order ID:* ${generatedOrderId}
-✨ *Plan:* ${selectedPlanName}
-⏳ *Duration:* ${durationText}
-💰 *Total Amount:* ${amount}
-💳 *Payment Gateway:* ${currentQrMethod.toUpperCase()}
-🧾 *Txn ID / Ref:* ${txnId}
-
-👤 *Customer Email:* ${email}
-📱 *Customer WhatsApp:* ${phone}
-━━━━━━━━━━━━━━━━━━━━━━
-_Hello Bikram, I have submitted payment. Please verify and send my Netflix login credentials._`;
-
-      const encodedMsg = encodeURIComponent(message);
-      lastWhatsAppUrl = `https://wa.me/${SELLER_CONFIG.whatsappNumber}?text=${encodedMsg}`;
-
-      // Open WhatsApp in new tab
-      window.open(lastWhatsAppUrl, '_blank');
-
-      // Advance to Step 3 (Confirmation & next instructions)
-      document.getElementById('checkout-step-1').classList.add('hidden');
-      document.getElementById('checkout-step-2').classList.add('hidden');
-      document.getElementById('checkout-step-3').classList.remove('hidden');
-      document.getElementById('modal-heading').innerText = "Order Received";
-
-      document.getElementById('confirm-order-id').innerText = generatedOrderId;
-      document.getElementById('confirm-plan-name').innerText = `${selectedPlanName} (${durationText})`;
-      lucide.createIcons();
-    }
-
-    function reopenWhatsApp() {
-      if (lastWhatsAppUrl) {
-        window.open(lastWhatsAppUrl, '_blank');
-      } else {
-        openWhatsAppChat();
-      }
-    }
-
-    function openWhatsAppChat(customText) {
-      const text = customText || "Hi Bikram! I have an inquiry regarding Netflix subscriptions.";
-      window.open(`https://wa.me/${SELLER_CONFIG.whatsappNumber}?text=${encodeURIComponent(text)}`, '_blank');
-    }
-
-    function applyCoupon() {
-      const code = document.getElementById('coupon-code').value.trim().toUpperCase();
-      const msg = document.getElementById('coupon-msg');
-      msg.classList.remove('hidden');
-
-      if (code === 'NETFLIX20' || code === 'ABISHEKH') {
-        appliedDiscount = 0.20;
-        msg.className = "text-[11px] mt-1 text-emerald-400 font-semibold";
-        msg.innerText = "✓ 20% Promo Discount Applied!";
+      <!-- Dynamic Form Inputs depending on Plan -->
+      <div class="space-y-3">
         
-        const currentPrices = calculatePrice(selectedPlanId);
-        let discounted;
-        if (currentCurrency === 'USD') {
-          discounted = (parseFloat(currentPrices.numeric) * 0.8).toFixed(2);
-        } else {
-          discounted = Math.round(currentPrices.numeric * 0.8);
-        }
-        document.getElementById('modal-total-price').innerText = `${currencyRates[currentCurrency].symbol}${discounted}`;
-      } else {
-        msg.className = "text-[11px] mt-1 text-red-400 font-medium";
-        msg.innerText = "Invalid or expired promo code. Try 'NETFLIX20'";
-      }
-    }
+        <!-- Email Field (Dynamic Label) -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1" id="label-customer-email">
+            Email for Credentials Delivery *
+          </label>
+          <div class="relative">
+            <i data-lucide="mail" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+            <input type="email" id="customer-email" placeholder="you@example.com" class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 transition-colors">
+          </div>
+        </div>
 
-    function openTrackModal() {
-      document.getElementById('track-modal').classList.remove('hidden');
-      document.getElementById('track-result-box').classList.add('hidden');
-      lucide.createIcons();
-    }
+        <!-- Password Field (Only shown for Personal Email Upgrade) -->
+        <div id="personal-account-password-box" class="hidden space-y-1">
+          <label class="block text-xs font-semibold text-amber-300">
+            Temporary Netflix Password (for payment activation) *
+          </label>
+          <div class="relative">
+            <i data-lucide="key" class="w-4 h-4 text-amber-400 absolute left-3 top-3"></i>
+            <input type="text" id="customer-temp-password" placeholder="Temporary password" class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-lg bg-amber-500/10 border border-amber-500/30 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors">
+          </div>
+          <p class="text-[10px] text-gray-400">
+            🔒 You can change this password immediately after we activate the plan.
+          </p>
+        </div>
 
-    function closeTrackModal() {
-      document.getElementById('track-modal').classList.add('hidden');
-    }
+        <!-- WhatsApp Number Field -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 mb-1">WhatsApp Number (For Order Delivery & OTP) *</label>
+          <div class="relative">
+            <i data-lucide="phone" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+            <input type="tel" id="customer-phone" placeholder="98XXXXXXXX" class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 transition-colors">
+          </div>
+        </div>
 
-    function lookupOrder() {
-      const email = document.getElementById('track-email-input').value.trim().toLowerCase();
-      const resultBox = document.getElementById('track-result-box');
-      resultBox.classList.remove('hidden');
+      </div>
 
-      resultBox.innerHTML = `
-        <div class="text-white font-bold mb-1">Subscription Lookup: ${email || 'customer'}</div>
-        <div class="text-gray-300">Plan: <strong>Private 4K Profile</strong></div>
-        <div class="text-gray-300">Status: <span class="text-emerald-400 font-semibold">Active & Guaranteed</span></div>
-        <div class="text-gray-400 text-[11px] mt-1">Order ID: #FP-${Math.floor(100000 + Math.random() * 900000)}</div>
-        <div class="text-[11px] text-gray-500 mt-2">Need a profile reset? Contact WhatsApp Support.</div>
-      `;
-    }
+      <!-- Promo Code Input -->
+      <div class="pt-1">
+        <div class="flex gap-2">
+          <input type="text" id="coupon-code" placeholder="Discount Code (e.g. BIKRAM)" class="w-full px-3 py-2 text-xs rounded-lg bg-white/5 border border-white/10 text-white uppercase placeholder-gray-500 focus:outline-none focus:border-red-500">
+          <button onclick="applyCoupon()" class="px-3 py-2 bg-white/10 hover:bg-white/20 text-xs font-semibold rounded-lg text-gray-200 shrink-0">Apply</button>
+        </div>
+        <div id="coupon-msg" class="text-[11px] mt-1 hidden"></div>
+      </div>
 
-    function toggleFaq(id) {
-      const ans = document.getElementById(`faq-answer-${id}`);
-      const icon = document.getElementById(`faq-icon-${id}`);
-      if (ans.classList.contains('hidden')) {
-        ans.classList.remove('hidden');
-        icon.classList.add('rotate-180');
-      } else {
-        ans.classList.add('hidden');
-        icon.classList.remove('rotate-180');
-      }
-    }
+      <!-- Proceed to QR Payment Button -->
+      <button onclick="goToPaymentStep()" class="w-full py-3 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-bold text-sm shadow-xl shadow-red-600/30 transition-all flex items-center justify-center gap-2 mt-2">
+        <span>Proceed to Payment (Fonepay / eSewa QR)</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </button>
+    </div>
 
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
-    }
+    <!-- STEP 2: eSewa / Khalti / Fonepay Payment & WhatsApp Action -->
+    <div id="checkout-step-2" class="hidden space-y-4">
+      
+      <!-- Total Price Banner with 1-Click Copy Amount -->
+      <div class="bg-gradient-to-r from-emerald-950/70 to-black p-3.5 rounded-xl border border-emerald-500/30 flex items-center justify-between">
+        <div>
+          <span class="text-[11px] text-gray-400 block">Total Amount to Pay</span>
+          <div class="flex items-center gap-2 mt-0.5">
+            <span class="text-xl font-black text-emerald-400" id="qr-modal-price">NPR 799</span>
+            <button type="button" onclick="copyPayAmount()" class="px-2 py-0.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-emerald-300 text-[10px] font-bold flex items-center gap-1">
+              <i data-lucide="copy" class="w-3 h-3"></i> Copy Amount
+            </button>
+          </div>
+        </div>
+        <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 text-xs font-bold rounded-lg border border-emerald-500/30">
+          Order <span id="qr-order-id">#FP-9284</span>
+        </span>
+      </div>
 
-    function showCopyToast(msg) {
-      const toast = document.getElementById('copy-toast');
-      toast.querySelector('span').innerText = msg;
-      toast.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
-      setTimeout(() => {
-        toast.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
-      }, 2500);
-    }
+      <!-- Direct Send Money Quick-Bar -->
+      <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between gap-3">
+        <div>
+          <div class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider flex items-center gap-1">
+            <i data-lucide="zap" class="w-3 h-3 text-yellow-400"></i> Direct Transfer / Send Money
+          </div>
+          <div class="text-xs text-white font-medium mt-0.5">
+            Send to: <strong class="text-emerald-300 font-bold text-sm">9860874001</strong>
+          </div>
+          <div class="text-[10px] text-gray-400">Name: Bikram Acharya (Nabil / eSewa / Khalti)</div>
+        </div>
+        <button type="button" onclick="copyWalletId()" class="px-3 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center gap-1.5 shrink-0 transition-colors shadow-sm">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy Number</span>
+        </button>
+      </div>
 
-    // Live Activity Notifications
-    const dummyNames = [
-      "Aarav from Pokhara", "Pooja from Lalitpur", "Bikash from Kathmandu",
-      "Rohan from Butwal", "Sneha from Biratnagar", "Dipen from Dharan"
-    ];
-    const dummyPlans = [
-      "Private 4K Profile (3 Months)",
-      "Full Private Account (6 Months)",
-      "Private 4K Profile (12 Months)",
-      "Economy Screen (1 Month)"
-    ];
+      <!-- Payment Method Selector Tabs -->
+      <div class="grid grid-cols-3 gap-1.5 p-1 bg-white/5 rounded-xl border border-white/10 text-xs font-semibold">
+        <button type="button" onclick="switchQrMethod('esewa')" id="tab-esewa" class="py-2 rounded-lg bg-emerald-600 text-white transition-all">Fonepay / eSewa</button>
+        <button type="button" onclick="switchQrMethod('khalti')" id="tab-khalti" class="py-2 rounded-lg text-gray-400 hover:text-white transition-all">Khalti</button>
+        <button type="button" onclick="switchQrMethod('direct')" id="tab-direct" class="py-2 rounded-lg text-gray-400 hover:text-white transition-all">Nabil Bank / Direct</button>
+      </div>
 
-    function triggerLiveNotification() {
-      const toast = document.getElementById('live-toast');
-      const toastText = document.getElementById('toast-text');
+      <!-- QR Code Container -->
+      <div id="qr-box-container" class="bg-black/60 rounded-xl p-4 border border-white/10 text-center space-y-3">
+        <p class="text-xs text-gray-300">
+          Scan with your <strong class="text-white" id="qr-gateway-name">eSewa or Bank App</strong>:
+        </p>
 
-      const randName = dummyNames[Math.floor(Math.random() * dummyNames.length)];
-      const randPlan = dummyPlans[Math.floor(Math.random() * dummyPlans.length)];
+        <!-- Display Genuine QR Image -->
+        <div class="relative inline-block p-2 bg-white rounded-xl shadow-lg shadow-black/60 max-w-[220px]">
+          <img id="dynamic-qr-image" src="esewa-qr.jpg" alt="Official Payment QR" 
+               onerror="handleQrImageFallback(this)" 
+               class="w-48 h-48 sm:w-52 sm:h-52 object-contain mx-auto rounded-lg">
+        </div>
 
-      toastText.innerText = `${randName} just activated ${randPlan}`;
-      toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+        <p class="text-[11px] text-gray-400 leading-snug">
+          If scanning prompts an error, tap <strong>Send Money</strong> in your app and send to <strong class="text-emerald-400">9860874001</strong>.
+        </p>
 
-      setTimeout(() => {
-        toast.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
-      }, 4500);
-    }
+        <!-- Manual Account ID & Copy -->
+        <div class="flex items-center justify-center gap-2 text-xs pt-1 border-t border-white/5">
+          <span class="text-gray-400" id="qr-id-label">Account No:</span>
+          <span class="text-white font-mono font-bold bg-white/10 px-2 py-0.5 rounded" id="qr-account-id">9860874001</span>
+          <button type="button" onclick="copyWalletId()" class="text-emerald-400 hover:text-emerald-300 font-semibold underline text-[11px]">Copy</button>
+        </div>
+      </div>
 
-    // Initial load setup
-    window.addEventListener('DOMContentLoaded', () => {
-      updatePriceDisplay();
-      setTimeout(triggerLiveNotification, 3000);
-      setInterval(triggerLiveNotification, 14000);
-    });
-  </script>
-</body>
-</html>
+      <!-- Direct Chat / Bank Instructions -->
+      <div id="direct-chat-info" class="hidden bg-white/5 p-4 rounded-xl border border-white/10 text-xs text-gray-300 space-y-2">
+        <p class="font-semibold text-white">Nabil Bank Direct Transfer / ConnectIPS:</p>
+        <p>Connect directly with Bikram Acharya on WhatsApp (9860874001) for direct bank account number, IBAN, or custom assistance.</p>
+      </div>
+
+      <!-- Transaction ID / Reference Input -->
+      <div>
+        <label class="block text-xs font-semibold text-gray-300 mb-1">Transaction ID / Remarks (Optional)</label>
+        <div class="relative">
+          <i data-lucide="receipt" class="w-4 h-4 text-gray-400 absolute left-3 top-3"></i>
+          <input type="text" id="transaction-id" placeholder="e.g. 1029384756 (or send screenshot on WhatsApp)" class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition-colors">
+        </div>
+      </div>
+
+      <!-- Confirm & Send to WhatsApp Button -->
+      <button type="button" onclick="submitOrderToWhatsApp()" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
+        <i data-lucide="message-circle" class="w-5 h-5 fill-white"></i>
+        <span>Confirm & Send Order via WhatsApp</span>
+      </button>
+
+      <!-- Back Button -->
+      <div class="flex items-center justify-between text-xs pt-1">
+        <button type="button" onclick="goBackToStep1()" class="text-gray-400 hover:text-white flex items-center gap-1">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back to Details
+        </button>
+        <span class="text-gray-500 text-[11px]">Direct WhatsApp Activation</span>
+      </div>
+    </div>
+
+    <!-- STEP 3: Order Submitted Confirmation -->
+    <div id="checkout-step-3" class="hidden space-y-4 text-center">
+      <div class="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto mb-2">
+        <i data-lucide="check-check" class="w-7 h-7"></i>
+      </div>
+      <h4 class="text-xl font-bold text-white">Order Registered!</h4>
+      <p class="text-xs text-gray-300 max-w-sm mx-auto leading-relaxed">
+        Your order details have been forwarded to Bikram on WhatsApp. Send your payment screenshot to complete activation!
+      </p>
+
+      <div class="bg-black/50 border border-white/10 rounded-xl p-3.5 text-xs text-left space-y-2 font-mono">
+        <div class="flex justify-between border-b border-white/5 pb-1.5">
+          <span class="text-gray-400">Order ID:</span>
+          <span class="text-emerald-400 font-bold" id="confirm-order-id">#FP-0000</span>
+        </div>
+        <div class="flex justify-between border-b border-white/5 pb-1.5">
+          <span class="text-gray-400">Subscription:</span>
+          <span class="text-white" id="confirm-plan-name">Shared 4K Profile</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Contact:</span>
+          <span class="text-emerald-400 font-semibold">Bikram Acharya (9860874001)</span>
+        </div>
+      </div>
+
+      <div class="pt-2 flex flex-col gap-2">
+        <button onclick="reopenWhatsApp()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs flex items-center justify-center gap-2">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Re-open WhatsApp Chat</span>
+        </button>
+        <button onclick="closeCheckoutModal()" class="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-gray-300 hover:text-white font-semibold text-xs">
+          Close Window
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+  <div class="space-y-3">
+    <p class="text-xs text-gray-400">Enter your registered email to check status or request assistance.</p>
+    <div>
+      <label class="block text-xs font-semibold text-gray-300 mb-1">Registered Email</label>
+      <input type="email" id="track-email-input" placeholder="e.g. buyer@example.com" class="w-full px-3 py-2 text-xs sm:text-sm rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-red-500">
+    </div>
+
+    <button onclick="lookupOrder()" class="w-full py-2.5 rounded-xl bg-brand-red hover:bg-brand-redHover text-white font-semibold text-xs transition-all flex items-center justify-center gap-2">
+      <i data-lucide="key" class="w-4 h-4"></i>
+      <span>Lookup Subscription</span>
+    </button>
+
+    <div id="track-result-box" class="hidden mt-4 p-3.5 bg-black/50 border border-white/10 rounded-xl text-xs space-y-2"></div>
+  </div>
+</div>
